@@ -1,19 +1,15 @@
 const express=require('express');
 const app=express();
 const port =3000;
-
-app.use('/user',(req,res,next)=>{
-   // res.send("FirstLine");
-   console.log("First Line");
-   res.send("First Line")
-    next();
-},
-(req,res)=>{
-    res.send("First Line executed by using next fucntion")
-
+const {UserAuth}=require('./middlewares/auth.js')
+app.use('/admin',UserAuth)
+app.get('/admin/getData',(req,res)=>{
+    res.send("Data Retrived Succesfully");
+    
 })
-app.use('/users',(req,res)=>{
-    res.send("LastLine");
+app.use('/admin/UpdateData',(req,res,next)=>{
+    res.send("Data Updated Succesfully");
+    
 })
 
 app.listen(port,()=>{
