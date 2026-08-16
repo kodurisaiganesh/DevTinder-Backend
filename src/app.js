@@ -20,7 +20,11 @@ app.patch('/update',async(req,res)=>{
     const userid=req.body.email;
     const update=req.body;
     try{
-    const datas=await UserData.findOneAndUpdate({email:userid},update);
+    const datas=await UserData.findOneAndUpdate({email:userid},update,
+        {
+            runValidators:true
+        }
+    );
     console.log(datas);
     res.send("Updated Successfully");
     }catch(err)
@@ -36,7 +40,8 @@ app.delete('/delete',async(req,res)=>{
         res.send("Delete Success");
     }
     catch(err){
-        res.status(401).send("Something went wrong");
+        console.log(err);
+        res.status(401).send("Something went wrong"+err.message);
     }
 })
 app.post('/signupp',async(req,res)=>{
