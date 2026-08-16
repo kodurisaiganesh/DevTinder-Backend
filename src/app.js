@@ -14,8 +14,8 @@ app.get("/feed", async (req, res) => {
   res.send(user);
 });
 
-app.patch("/update", async (req, res) => {
-  const userid = req.body.userid;
+app.patch("/user/:userid", async (req, res) => {
+  const userid = req.params?.userid;
   const update = req.body;
   try {
     const ALLOWED_UPDATES = [
