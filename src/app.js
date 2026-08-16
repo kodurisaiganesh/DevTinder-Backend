@@ -92,7 +92,28 @@ app.post("/signup", async (req, res) => {
     res.status(500).send("Failed to save data "+err.message);
   }
 });
+app.post('/login',async(req,res)=>{
+  try{
+  const{email,password}=req.body;
+  const user=await UserData.findOne({email});
+  if(!user){
+    return res.status(401).send("Invalid email");
+  }
+  console.log(password);
+  console.log(user.password);
+  const validatepassword=await bcyrpt.compare(password,user.password);
+  console.log(validatepassword);
+  if(!validatepassword)
+  { 
+    return res.status(401).send("Invalid Password");
+  }
+  res.send("Login Success");
+}
+catch(err){
+  res.status(401).send("Login failed  "+err.message);
+}
 
+})
 ConnectDb()
   .then(() => {
     console.log("Db Connected Succesfully");
