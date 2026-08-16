@@ -1,9 +1,10 @@
 const express = require("express");
+const bcyrpt = require("bcrypt");
 const app = express();
 const port = 3000;
 const { ConnectDb } = require("./config/database");
 const UserData = require("./model/user.js");
-
+const { validationSignup } = require("./utils/validation.js");
 app.use(express.json());
 app.get("/getDetails", async (req, res) => {
   const user = await UserData.findOne({ email: req.body.email });
@@ -40,7 +41,7 @@ app.patch("/user/:userid", async (req, res) => {
     console.log(datas);
     res.send("Updated Successfully");
   } catch (err) {
-    res.status(400).send("Something went wrong in update "+err.message);
+    res.status(400).send("Something went wrong in update " + err.message);
   }
 });
 app.delete("/delete", async (req, res) => {
@@ -69,14 +70,26 @@ app.post("/signupp", async (req, res) => {
   res.send("Updated");
 });
 app.post("/signup", async (req, res) => {
-  const user = new UserData(req.body);
-  console.log(req.body.firstName);
+ 
+  //console.log(req.body.firstName);
+
   try {
+  const {firstName, lastName, email, password,phone} = req.body;
+  console.log(firstName);
+  const hashpassword = await bcyrpt.hash(password, 10);
+  console.log(hashpassword);
+    validationSignup(req);
+    const user = new UserData({
+      firstName,
+      lastName,
+      email,
+      password: hashpassword,
+      phone
+    });
     await user.save();
     res.send("Data Saved Successfully");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Failed to save data");
+  } catch (err) {
+    res.status(500).send("Failed to save data "+err.message);
   }
 });
 
