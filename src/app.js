@@ -5,7 +5,10 @@ const port = 3000;
 const { ConnectDb } = require("./config/database");
 const UserData = require("./model/user.js");
 const { validationSignup } = require("./utils/validation.js");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 app.use(express.json());
+app.use(cookieParser());
 app.get("/getDetails", async (req, res) => {
   const user = await UserData.findOne({ email: req.body.email });
   res.send(user);
@@ -70,48 +73,68 @@ app.post("/signupp", async (req, res) => {
   res.send("Updated");
 });
 app.post("/signup", async (req, res) => {
- 
   //console.log(req.body.firstName);
 
   try {
-  const {firstName, lastName, email, password,phone} = req.body;
-  console.log(firstName);
-  const hashpassword = await bcyrpt.hash(password, 10);
-  console.log(hashpassword);
+    const { firstName, lastName, email, password, phone } = req.body;
+    console.log(firstName);
+    const hashpassword = await bcyrpt.hash(password, 10);
+    console.log(hashpassword);
     validationSignup(req);
     const user = new UserData({
       firstName,
       lastName,
       email,
       password: hashpassword,
-      phone
+      phone,
     });
     await user.save();
     res.send("Data Saved Successfully");
   } catch (err) {
-    res.status(500).send("Failed to save data "+err.message);
+    res.status(500).send("Failed to save data " + err.message);
   }
 });
-app.post('/login',async(req,res)=>{
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await UserData.findOne({ email:email });
+    if (!user) {
+      return res.status(401).send("Invalid Credentials");
+    }
+    console.log(password);
+    console.log(user.password);
+    const validatepassword = await bcyrpt.compare(password, user.password);
+    console.log(validatepassword);
+    if (!validatepassword) {
+      return res.status(401).send("Invalid Password");
+    }
+    const jwttokem = await jwt.sign({ _id: user._id }, "Sai@12345");
+    res.cookie("token", jwttokem);
+    res.send("Login Success");
+  } catch (err) {
+    res.status(401).send("Login failed  " + err.message);
+  }
+});
+app.get('/profile',async(req,res)=>{
   try{
-  const{email,password}=req.body;
-  const user=await UserData.findOne({email});
+  const cookie=req.cookies;
+  const {token}=cookie;
+  if(!token){
+    throw new Error("Invalid Token");
+  }
+  const decodemessage=await jwt.verify(token,"Sai@12345");
+  const {_id}=decodemessage;
+  const user=await UserData.findOne({_id});
   if(!user){
-    return res.status(401).send("Invalid email");
+    throw new Error("Invalid Id");
   }
-  console.log(password);
-  console.log(user.password);
-  const validatepassword=await bcyrpt.compare(password,user.password);
-  console.log(validatepassword);
-  if(!validatepassword)
-  { 
-    return res.status(401).send("Invalid Password");
-  }
-  res.send("Login Success");
+  res.send(user);
 }
-catch(err){
-  res.status(401).send("Login failed  "+err.message);
+catch(err)
+{
+  res.status(501).send("Error:  "+err.message);
 }
+
 
 })
 ConnectDb()
