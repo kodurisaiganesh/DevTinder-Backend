@@ -5,6 +5,7 @@ const port = 3000;
 const { ConnectDb } = require("./config/database");
 const UserData = require("./model/user.js");
 const { validationSignup } = require("./utils/validation.js");
+const {UserAuth}=require('./middlewares/auth.js')
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 app.use(express.json());
@@ -108,16 +109,17 @@ app.post("/login", async (req, res) => {
     if (!validatepassword) {
       return res.status(401).send("Invalid Password");
     }
-    const jwttokem = await jwt.sign({ _id: user._id }, "Sai@12345");
-    res.cookie("token", jwttokem);
+    const jwttokem = await jwt.sign({ _id: user._id }, "Sai@12345",{expiresIn:"7d"});
+    res.cookie("token", jwttokem,{expires:"7d"});
     res.send("Login Success");
   } catch (err) {
     res.status(401).send("Login failed  " + err.message);
   }
 });
-app.get('/profile',async(req,res)=>{
+app.get('/profile',UserAuth,async(req,res)=>{
   try{
-  const cookie=req.cookies;
+    const user=req.user;
+  /*const cookie=req.cookies;
   const {token}=cookie;
   if(!token){
     throw new Error("Invalid Token");
@@ -127,7 +129,7 @@ app.get('/profile',async(req,res)=>{
   const user=await UserData.findOne({_id});
   if(!user){
     throw new Error("Invalid Id");
-  }
+  }*/
   res.send(user);
 }
 catch(err)
