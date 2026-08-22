@@ -51,4 +51,6 @@ authRouter.post("/login", async (req, res) => {
   }
 });
 
+res.post
+
 module.exports = authRouter;
