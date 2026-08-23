@@ -44,6 +44,15 @@ const UserData=new mongoose.Schema({
         match: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/,
 
     },
+    updatePassword:{
+        type:String,
+        validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("Enter a Strong password");
+            }
+        }
+
+    },
     gender:{
         type:String,
         enum: {
@@ -60,7 +69,10 @@ const UserData=new mongoose.Schema({
     Bio:{
         type:String,
         default:"Welcome to the dev tinderr"
-    }
+    },
+    age:{
+        type:Number
+    },
 },{timestamps:true})
 UserData.methods.validatePassword=async function(password){
     const user=this;

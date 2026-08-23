@@ -24,4 +24,10 @@ const validationSignup = (req) => {
     }
 };
 
-module.exports = { validationSignup };
+const validationEditProfile=(req)=>{
+    const EditProfile=["firstName","lastName","age","phone","Skills","Bio"];
+    return Object.keys(req.body).every((field)=>EditProfile.includes(field));
+};
+
+
+module.exports = { validationSignup,validationEditProfile };
