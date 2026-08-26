@@ -9,7 +9,7 @@ const UserData=new mongoose.Schema({
         type:String,
         required:true,
         minlength:4,
-        maxlength:10,
+        maxlength:20,
         trim:true
     },
     lastName:{

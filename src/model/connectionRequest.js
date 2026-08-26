@@ -3,10 +3,12 @@ const mongoose = require("mongoose");
 const connectRequestSchema = new mongoose.Schema({
   fromUserId: {
     type: mongoose.Schema.Types.ObjectId,
+    ref:"UserDatatable",
     required: true,
   },
   toUserId:{    
-        type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"UserDatatable",
     required: true
   },
   status:{
@@ -16,7 +18,7 @@ const connectRequestSchema = new mongoose.Schema({
         values:["interested","ignored","rejected","accepted"],
         message:`{VALUE} is invalid`
     }
-  }
+}
 });
 connectRequestSchema.index({fromUserId:1,toUserId:1});
 const ConnectRequestModel=mongoose.model("ConectRequestSchema",connectRequestSchema);
