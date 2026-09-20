@@ -21,9 +21,8 @@ const UserData=new mongoose.Schema({
     phone:{
         type:Number,
         minLength:10,
-        maxLength:10,
-        required:true
-    },
+        maxLength:10
+        },
     email:{
         type:String,
         required:true,
@@ -56,7 +55,7 @@ const UserData=new mongoose.Schema({
     gender:{
         type:String,
         enum: {
-        values: ["male", "female", "others"],
+        values: ["male", "female", "Others"],
         message: "Invalid gender type"
     }
     },
@@ -66,12 +65,27 @@ const UserData=new mongoose.Schema({
     Skills:{
         type:[String]
     },
+    photoUrl:{
+        type:String
+    },
     Bio:{
         type:String,
         default:"Welcome to the dev tinderr"
     },
     age:{
         type:Number
+    },
+    lastActiveAt:{
+        type:Date,
+        default:Date.now
+    },
+    isOnline:{
+        type:Boolean,
+        default:false
+    },
+    lastSeenAt:{
+        type:Date,
+        default:null
     },
 },{timestamps:true})
 UserData.methods.validatePassword=async function(password){

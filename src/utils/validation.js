@@ -25,7 +25,7 @@ const validationSignup = (req) => {
 };
 
 const validationEditProfile=(req)=>{
-    const EditProfile=["firstName","lastName","age","phone","Skills","Bio"];
+    const EditProfile=["firstName","lastName","age","phone","Skills","Bio","photoUrl","address","gender"];
     return Object.keys(req.body).every((field)=>EditProfile.includes(field));
 };
 
