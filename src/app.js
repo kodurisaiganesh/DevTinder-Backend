@@ -16,7 +16,9 @@ app.use(
     origin: (origin, callback) => {
       const allowedOrigins = [
         "http://localhost:5173",
-        "http://127.0.0.1:5173"
+        "http://127.0.0.1:5173",
+        "http://13.62.230.153",
+        "https://13.62.230.153"
       ];
 
       if (!origin || allowedOrigins.includes(origin)) {
