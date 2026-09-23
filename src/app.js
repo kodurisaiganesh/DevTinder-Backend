@@ -18,7 +18,11 @@ app.use(
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://13.62.230.153",
-        "https://13.62.230.153"
+        "https://13.62.230.153",
+        "http://devtindersaiganesh.website",
+        "https://devtindersaiganesh.website",
+        "http://www.devtindersaiganesh.website",
+        "https://www.devtindersaiganesh.website"
       ];
 
       if (!origin || allowedOrigins.includes(origin)) {
